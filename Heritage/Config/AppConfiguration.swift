@@ -7,7 +7,7 @@ enum AppConfiguration {
     }
 
     enum StoreKit {
-        static let premiumProductID = "com.yourcompany.heritage.premium.weekly"
+        static let premiumProductID = "weekly"
         static let premiumProductIDs: Set<String> = [premiumProductID]
     }
 
