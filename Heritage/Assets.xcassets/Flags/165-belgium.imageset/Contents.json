@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "165-belgium.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

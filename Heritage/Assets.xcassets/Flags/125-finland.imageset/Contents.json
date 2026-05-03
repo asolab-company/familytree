@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "125-finland.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
