@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "200-south-africa.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
