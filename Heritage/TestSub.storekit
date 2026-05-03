@@ -1,0 +1,81 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "65A59DC4",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "HERITAGE-PREMIUM-GROUP",
+      "localizations" : [
+
+      ],
+      "name" : "Heritage Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "14.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "HERITAGE-WEEKLY-001",
+          "introductoryOffer" : {
+            "displayPrice" : "0",
+            "internalID" : "HERITAGE-WEEKLY-TRIAL-001",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P3D"
+          },
+          "localizations" : [
+            {
+              "description" : "Weekly Premium access with a 3-day free trial.",
+              "displayName" : "Heritage Premium Weekly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.yourcompany.heritage.premium.weekly",
+          "recurringSubscriptionPeriod" : "P1W",
+          "referenceName" : "Heritage Premium Weekly",
+          "subscriptionGroupID" : "HERITAGE-PREMIUM-GROUP",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 5,
+    "minor" : 0
+  }
+}
