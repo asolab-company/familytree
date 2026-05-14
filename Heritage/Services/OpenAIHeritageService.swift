@@ -33,10 +33,6 @@ struct OpenAIHeritageService {
     }
 
     func analyze(input: HeritageAnalysisInput, image: UIImage? = nil) async throws -> HeritageAnalysisResult {
-        if let image, !ImagePersonDetector.containsPerson(in: image) {
-            throw HeritageAnalysisError.noPeopleDetected
-        }
-
         guard let apiKey = try await OpenAIAPIKeyProvider.shared.apiKey() else {
             throw HeritageAnalysisError.missingAPIKey
         }

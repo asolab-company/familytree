@@ -8,11 +8,28 @@ enum ImagePersonDetector {
             return false
         }
 
+        if detectPerson(in: cgImage, orientation: image.visionOrientation) {
+            return true
+        }
+
+        guard let normalizedImage = image.normalizedForVision(),
+              let normalizedCGImage = normalizedImage.cgImage
+        else {
+            return false
+        }
+
+        return detectPerson(in: normalizedCGImage, orientation: .up)
+    }
+
+    private static func detectPerson(
+        in cgImage: CGImage,
+        orientation: CGImagePropertyOrientation
+    ) -> Bool {
         let faceRequest = VNDetectFaceRectanglesRequest()
         let humanRequest = VNDetectHumanRectanglesRequest()
         let handler = VNImageRequestHandler(
             cgImage: cgImage,
-            orientation: image.visionOrientation,
+            orientation: orientation,
             options: [:]
         )
 
@@ -52,15 +69,29 @@ private extension UIImage {
         case .downMirrored:
             .downMirrored
         case .left:
-            .left
-        case .leftMirrored:
             .leftMirrored
+        case .leftMirrored:
+            .left
         case .right:
-            .right
-        case .rightMirrored:
             .rightMirrored
+        case .rightMirrored:
+            .right
         @unknown default:
             .up
+        }
+    }
+
+    func normalizedForVision() -> UIImage? {
+        guard imageOrientation != .up else {
+            return nil
+        }
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = scale
+        format.opaque = false
+
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            draw(in: CGRect(origin: .zero, size: size))
         }
     }
 }

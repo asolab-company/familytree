@@ -414,8 +414,8 @@ private struct PaywallPremiumSection: View {
                 .frame(width: 356, height: layout.buttonHeight)
             }
             .buttonStyle(.plain)
-            .disabled(premiumStore.isPurchasing)
-            .opacity(premiumStore.isPurchasing ? 0.72 : 1)
+            .disabled(premiumStore.isPurchasing || premiumStore.product == nil)
+            .opacity((premiumStore.isPurchasing || premiumStore.product == nil) ? 0.72 : 1)
             .padding(.top, layout.buttonTop)
 
             PaywallLegalLinks(

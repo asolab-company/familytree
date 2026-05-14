@@ -8,7 +8,7 @@ enum AppConfiguration {
 
     enum StoreKit {
         static let premiumProductID = "weekly"
-        static let premiumProductIDs: Set<String> = [premiumProductID]
+        static let premiumProductIDs = [premiumProductID]
     }
 
     enum Legal {

@@ -8,9 +8,9 @@ struct PremiumProductPresentation: Equatable {
     let ctaTitle: String
 
     static let placeholder = PremiumProductPresentation(
-        featureTitle: "3-day free trial",
-        featureSubtitle: "then\n$14.99/week",
-        ctaTitle: "Unlock your family story today"
+        featureTitle: "Premium access",
+        featureSubtitle: "Loading price...",
+        ctaTitle: "Loading..."
     )
 }
 
@@ -42,7 +42,7 @@ final class StoreKitPremiumStore: ObservableObject {
         if let trialTitle = product.freeTrialTitle {
             return PremiumProductPresentation(
                 featureTitle: trialTitle,
-                featureSubtitle: "then\n\(priceLine)",
+                featureSubtitle: "Then\n\(priceLine)",
                 ctaTitle: "Unlock your family story today"
             )
         }
@@ -66,7 +66,16 @@ final class StoreKitPremiumStore: ObservableObject {
             let products = try await Product.products(
                 for: AppConfiguration.StoreKit.premiumProductIDs
             )
-            product = products.first
+            product = AppConfiguration.StoreKit.premiumProductIDs
+                .compactMap { productID in
+                    products.first { $0.id == productID }
+                }
+                .first
+
+            if product == nil {
+                errorMessage = "Premium product is not available."
+            }
+
             await refreshEntitlements()
         } catch {
             errorMessage = error.localizedDescription
@@ -99,7 +108,9 @@ final class StoreKitPremiumStore: ObservableObject {
                 }
                 await refreshEntitlements()
                 return hasPremiumAccess
-            case .pending, .userCancelled:
+            case .pending:
+                return false
+            case .userCancelled:
                 return false
             @unknown default:
                 return false
@@ -183,26 +194,34 @@ private extension Product {
             return nil
         }
 
-        return "\(offer.period.paywallText) free trial"
+        return "\(offer.period.paywallDurationText) free"
     }
 
     var paywallPriceLine: String {
-        guard let period = subscription?.subscriptionPeriod else {
-            return displayPrice
+        "\(displayPrice) per \(paywallBillingPeriodText)"
+    }
+
+    private var paywallBillingPeriodText: String {
+        if id == AppConfiguration.StoreKit.premiumProductID {
+            return "week"
         }
 
-        return "\(displayPrice)/\(period.unit.paywallUnitText)"
+        return subscription?.subscriptionPeriod.paywallDurationText ?? "period"
     }
 }
 
 private extension Product.SubscriptionPeriod {
-    var paywallText: String {
-        "\(value)-\(unit.paywallUnitText)"
+    var paywallDurationText: String {
+        if value == 1 {
+            return unit.paywallSingularText
+        }
+
+        return "\(value) \(unit.paywallPluralText)"
     }
 }
 
 private extension Product.SubscriptionPeriod.Unit {
-    var paywallUnitText: String {
+    var paywallSingularText: String {
         switch self {
         case .day:
             "day"
@@ -214,6 +233,21 @@ private extension Product.SubscriptionPeriod.Unit {
             "year"
         @unknown default:
             "period"
+        }
+    }
+
+    var paywallPluralText: String {
+        switch self {
+        case .day:
+            "days"
+        case .week:
+            "weeks"
+        case .month:
+            "months"
+        case .year:
+            "years"
+        @unknown default:
+            "periods"
         }
     }
 }

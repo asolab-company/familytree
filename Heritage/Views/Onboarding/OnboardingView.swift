@@ -73,6 +73,7 @@ struct OnboardingView: View {
                 isLoading: isAnalyzingHeritage,
                 progress: heritageAnalysisProgress,
                 errorMessage: analysisErrorMessage,
+                onBack: returnToPhotoUpload,
                 action: analyzeHeritageAndFinish
             )
             .tag(5)
@@ -155,6 +156,19 @@ struct OnboardingView: View {
                 heritageAnalysisProgress = 0
                 isAnalyzingHeritage = false
             }
+        }
+    }
+
+    private func returnToPhotoUpload() {
+        guard !isAnalyzingHeritage else {
+            return
+        }
+
+        selectedPhoto = nil
+        analysisErrorMessage = nil
+
+        withAnimation(.easeInOut(duration: 0.22)) {
+            page = 4
         }
     }
 
@@ -784,6 +798,7 @@ private struct EthnicResultOnboardingPage: View {
     let isLoading: Bool
     let progress: Double
     let errorMessage: String?
+    let onBack: () -> Void
     let action: () -> Void
 
     var body: some View {
@@ -795,7 +810,13 @@ private struct EthnicResultOnboardingPage: View {
                     Spacer().frame(height: metrics.resultTop)
 
                     HStack {
-                        HeaderBackTitle(title: "Ethnic Origin")
+                        if !isLoading {
+                            HeaderBackTitle(title: "Ethnic Origin", action: onBack)
+                        } else {
+                            Text("Ethnic Origin")
+                                .font(AppTypography.bold(24))
+                                .foregroundColor(AppColors.gold)
+                        }
                         Spacer()
                     }
                     .padding(.horizontal, 19)
@@ -834,7 +855,7 @@ private struct EthnicResultOnboardingPage: View {
                     }
 
                     PrimaryOnboardingButton(
-                        title: isLoading ? "Analyzing..." : "Continue",
+                        title: buttonTitle,
                         action: action
                     )
                         .frame(height: OnboardingLayout.buttonHeight)
@@ -854,6 +875,14 @@ private struct EthnicResultOnboardingPage: View {
                 )
             }
         }
+    }
+
+    private var buttonTitle: String {
+        if isLoading {
+            return "Analyzing..."
+        }
+
+        return "Continue"
     }
 }
 
@@ -1647,20 +1676,27 @@ private struct LegalText: View {
 private struct HeaderBackTitle: View {
     let title: String
     var compact = false
+    var action: (() -> Void)?
 
     var body: some View {
         HStack(spacing: compact ? 12 : 16) {
-            Circle()
-                .fill(AppColors.glassStrong)
-                .overlay(
-                    Circle().stroke(AppColors.white.opacity(0.35), lineWidth: 1)
-                )
-                .overlay(
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: compact ? 11 : 18, weight: .medium))
-                        .foregroundColor(AppColors.gold)
-                )
-                .frame(width: compact ? 24 : 40, height: compact ? 24 : 40)
+            Button {
+                action?()
+            } label: {
+                Circle()
+                    .fill(AppColors.glassStrong)
+                    .overlay(
+                        Circle().stroke(AppColors.white.opacity(0.35), lineWidth: 1)
+                    )
+                    .overlay(
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: compact ? 11 : 18, weight: .medium))
+                            .foregroundColor(AppColors.gold)
+                    )
+                    .frame(width: compact ? 24 : 40, height: compact ? 24 : 40)
+            }
+            .buttonStyle(.plain)
+            .disabled(action == nil)
 
             Text(title)
                 .font(AppTypography.bold(compact ? 14 : 24))
